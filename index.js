@@ -294,5 +294,177 @@ console.log(Object.values(personel));//shows values of object
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Modifying Objects
+//Objects-JavaScript
+//Add an Object Property Using Dot or Bracket Notation
+
+const circle = {};
+
+circle.radius = 5;
+
+circle['diameter'] = 10;
+
+circle.circumference = circle.diameter * Math.PI;
+//=> 31.41592653589793
+
+circle['area'] = Math.PI * circle.radius ** 2;
+//=> 78.53981633974483
+
+circle;
+//=> { radius: 5, diameter: 10, circumference: 31.41592653589793, area: 78.53981633974483 }
+
+//-----------------------------------------------------------------
+//modifying Obj with dot and bracket notation
+
+//Destructive method
+
+const mondayMenu = {
+  cheesePlate: {
+    soft: 'Chèvre',
+    semiSoft: 'Gruyère',
+    hard: 'Manchego'
+  },
+  fries: 'Curly',
+  salad: 'Cobb'
+};
+
+mondayMenu.fries = 'Sweet potato';
+
+mondayMenu.salad = 'Caesar';
+
+mondayMenu;
+//=> { cheesePlate: { soft: "Chèvre", semiSoft: "Gruyère", hard: "Manchego" }, fries: "Sweet potato", salad: "Cobb" }
+
+//function to encapsulate the above
+//destructively modifying a property
+//function takes three arguments: the original menu 'Object', the 'key' identifying the property we want to update, and the value we want to change its 'value' to.(obj, key, value)
+
+function destructivelyUpdateObject (obj, key, value) {
+  obj[key] = value; //obj=Object- bracket notation to add key/value
+
+  return obj;//return the Object
+}
+
+const mondayMenu = {
+  cheesePlate: {
+    soft: 'Chèvre',
+    semiSoft: 'Gruyère',
+    hard: 'Manchego'
+  },
+  fries: 'Sweet potato',
+  salad: 'Cobb'
+};
+
+const tuesdayMenu = destructivelyUpdateObject(mondayMenu, 'salad', 'Caesar');
+//=> { cheesePlate: { soft: "Chèvre", semiSoft: "Gruyère", hard: "Manchego" }, fries: "Sweet potato", salad: "Caesar" }
+
+tuesdayMenu.salad;
+//=> "Caesar"
+mondayMenu.salad;
+//=> "Caesar"
+//destructively because now mondayMenu has been changed and we don't want that, we want to be able to update without changing the original.
+
+//-----------------------------------------------------------------
+//Update an Object Nondestructively
+
+//function nondestructivelyUpdateObject(obj, key, value) {
+// Code to return new, updated menu object
+//}
+
+function nondestructivelyUpdateObject(obj, key, value) {
+  const newObj = { ...obj }; //we can use the spread operator to copy all the elements of an existing array into a new array. We can do the same thing with Objects
+  newObj[key] = value;
+
+  return newObj;
+}
+
+const sundayMenu = nondestructivelyUpdateObject(tuesdayMenu, 'fries', 'Shoestring');// call function 'nondestructivelyUpdateObject' expression as value with desired change (obj,key,value) as arguments
+
+tuesdayMenu.fries;
+//=> "Sweet potato"
+
+sundayMenu.fries;
+//=> "Shoestring"
+
+//To review, we are calling our nondestructivelyUpdateObject() function, passing as our arguments the original menu (tuesdayMenu) and the key and value representing the desired change. The function first makes a copy of tuesdayMenu, then changes the value associated with the fries key to "Shoestring". Finally, it returns the updated menu, which is stored into the variable sundayMenu.
+
+//While this works, it's quite a bit to write, and it's not very extensible. If we want to modify more than a single property, we'll have to completely rewrite our function! Luckily, JavaScript has a much better solution for us.
+
+//-----------------------------------------------------------------
+//Use Object.assign()
+
+//will allow us to combine properties from multiple Objects into a single Object. The method takes two or more Objects as its arguments. The first argument passed to Object.assign() is the Object into which all of the properties will be merged. Every additional argument is an Object whose properties we want to merge into the first Object:
+
+//syntax: 
+//Object.assign(initialObject, additionalObject, additionalObject, ...);
+
+//The return value of Object.assign() is the initial Object after all of the additional Objects' properties have been merged in:
+
+Object.assign({ eggs: 3 }, { flour: '1 cup' });
+//=> { eggs: 3, flour: "1 cup" }
+
+Object.assign({ eggs: 3 }, { chocolateChips: '1 cup', flour: '2 cups' }, { flour: '1/2 cup' });
+// { eggs: 3, chocolateChips: "1 cup", flour: "1/2 cup" }
+
+Object.assign({ eggs: 3}, { chocolateChips: '1 cup', flour: '2 cups' }, { flour: '1/2 cup' }, { vanilla: '1 drop', masala: '2 tsp'}, { flour: '3 cups'});
+// {eggs: 3,chocolateChips: '1 cup',flour: '2 cups',vanilla: '1 drop',masala: '2 tsp'}
+
+//NOTE:If multiple Objects have a property with the same key, the last key to be defined wins out. Essentially, the last call to Object.assign() in the above snippet is wrapping all of the following assignments into a single line of code:
+
+const recipe = { eggs: 3 };
+
+recipe.chocolateChips = '1 cup';
+
+recipe.flour = '2 cups';
+
+recipe.flour = '1/2 cup';
+
+recipe.vanilla = '1 drop';
+
+recipe.masala = '2 tsp';
+
+recipe.flour = '3 cups';
+
+recipe;
+//{eggs: 3,chocolateChips: '1 cup',flour: '3 cups',vanilla: '1 drop',masala: '2 tsp'}
+
+//simply using Object.assign() does not make our function nondestructive. 
+
+//A common pattern for Object.assign() is to provide an empty Object as the first argument. That way we're composing an entirely new Object instead of modifying or overwriting the properties of an existing Object. 
+
+//This pattern allows us to rewrite the above destructivelyUpdateObject() function in a nondestructive way:
+
+//function nondestructivelyUpdateObject(obj, key, value) {
+//  return Object.assign({}, obj, { [key]: value });
+//}
+
+//The code above takes the first argument (an empty Object), adds all the properties in obj to it, then adds one final property consisting of the key and value that represent the change we want to make. If that key doesn't already exist in obj, it is added and its value is set to value. If it does already exist, its old value is replaced by value. 
+
+//Note that all the arguments to Object.assign() need to be objects, so we're representing the key-value pair as an Object using literal syntax here. Finally, the resulting new Object is returned.
+
+//using Recipe example above:
+
+function nondestructivelyUpdateObject(obj, key, value) {
+  return Object.assign({}, obj, { [key]: value });
+}
+
+const recipe = { eggs: 3 };
+
+const newRecipe = nondestructivelyUpdateObject(recipe, 'chocolate', '1 cup');
+//=> { eggs: 3, chocolate: "1 cup" }
+
+newRecipe;
+//=> { eggs: 3, chocolate: "1 cup" }
+
+recipe;
+//=> { eggs: 3 }
+
+const anotherRecipe = nondestructivelyUpdateObject(recipe, 'chocolate', '3 cup');
+
+anotherRecipe;
+
+recipe;
+//=> { eggs: 3 }
+
+//It's important that we merge everything into a new, empty Object. Otherwise, we would be modifying the original Object.
 
 
