@@ -466,5 +466,182 @@ recipe;
 //=> { eggs: 3 }
 
 //It's important that we merge everything into a new, empty Object. Otherwise, we would be modifying the original Object.
+//--------------------------------------------------------------------------------
+//Using Restaurant example:
 
+function createNewMenu (oldMenu, menuChanges) {
+  return Object.assign({}, oldMenu, menuChanges);
+}
+
+const tuesdayMenu = {
+  cheesePlate: {
+    soft: 'Chèvre',
+    semiSoft: 'Gruyère',
+    hard: 'Manchego'
+  },
+  fries: 'Sweet potato',
+  salad: 'Caesar'
+};
+
+const newOfferings = {
+  cheesePlate: {
+    soft: 'Brie',
+    semiSoft: 'Fontina',
+    hard: 'Provolone'
+  },
+  salad: 'Southwestern'
+};
+
+const thursdaySet = {
+  desserts : {
+    sweet: "pumpkin pudding",
+    savoury: "xxxyyyzzzz"
+  },
+  pasta: "putanesca"
+}
+
+const wednesdayMenu = createNewMenu(tuesdayMenu, newOfferings);
+
+wednesdayMenu;
+//=> { cheesePlate: { soft: "Brie", semiSoft: "Fontina", hard: "Provolone" }, fries: "Sweet potato", salad: "Southwestern" }
+
+tuesdayMenu;
+//=> { cheesePlate: { soft: "Chèvre", semiSoft: "Gruyère", hard: "Manchego" }, fries: "Sweet potato", salad: "Caesar" }
+
+const thursdayMenu = createNewMenu(tuesdayMenu, thursdaySet);
+
+thursdayMenu;
+//{cheesePlate: { soft: 'Chèvre', semiSoft: 'Gruyère', hard: 'Manchego' }, fries: 'Sweet potato', salad: 'Caesar', desserts: { sweet: 'pumpkin pudding', savoury: 'xxxyyyzzzz' },pasta:'putanesca'}
+
+tuesdayMenu;
+//{cheesePlate: { soft: 'Chèvre', semiSoft: 'Gruyère', hard: 'Manchego' },fries: 'Sweet potato',salad: 'Caesar'}
+
+//note:The return value of Object.assign() is the initial Object after all of the additional Objects' properties have been merged in
+//It's important that we merge everything into a new, empty Object. Otherwise, we would be modifying the original Object.
+
+//Note: that the value for fries remains the same because our newOfferings Object 'did not' contain a change for that property. 
+
+//note:However, this does not work for nested Objects.
+
+//NOTE:if newOfferings did not have an updated value for hard cheese:
+const newOfferings = {
+  cheesePlate: {
+    soft: 'Brie',
+    semiSoft: 'Fontina'
+  },
+  salad: 'Southwestern'
+};
+
+//Our updated menu would not include that property and would look like this:
+
+wednesdayMenu;
+//=> { cheesePlate: { soft: "Brie", semiSoft: "Fontina"}, fries: "Sweet potato", salad: "Southwestern" }
+
+//-----------------------------------------------------------------
+//Remove a Property from an Object
+
+//delete operator, 
+
+const wednesdayMenu = {
+  cheesePlate: {
+    soft: 'Brie',
+    semiSoft: 'Fontina',
+    hard: 'Provolone'
+  },
+  fries: 'Sweet potato',
+  salad: 'Southwestern'
+};
+
+delete wednesdayMenu.salad;// delete operator to remove property
+//=> true
+
+wednesdayMenu;
+//=> { cheesePlate: { soft: "Brie", semiSoft: "Fontina", hard: "Provolone" }, fries: "Sweet potato" }
+
+//-----------------------------------------------------------------
+//Identify the Relationship Between Arrays and Objects
+
+//Recap: Data types in JavaScript
+//7 types: 
+//numbers, strings, booleans, symbols, Objects, null, and undefined
+
+//An Array is a special type of object!
+typeof [];
+//=> "object"
+
+//We can set properties on an Array just like a regular Object:
+const myArray = [];
+
+myArray.summary = 'Empty array!';
+
+myArray;
+//=> [summary: "Empty array!"]
+
+//And we can modify and access those properties, too:
+myArray['summary'] = 'This array is totally empty.';
+
+myArray;
+//=> [summary: "This array is totally empty."]
+
+myArray.summary;
+//=> "This array is totally empty."
+
+//In fact, everything we can do to Objects can also be done to Arrays because Arrays are Objects. Just special ones.
+
+//To see the special stuff, let's .push() some values into our Array:
+
+myArray.push(2, 3, 5, 7);
+//=> 4
+
+myArray;
+//=> [2, 3, 5, 7, summary: "This array is totally empty."]
+
+myArray.length;
+//=> 4
+myArray[0];
+//=> 2
+myArray[myArray.length - 1];
+//=> 7
+
+//Array-style elements are stored separately from its Object-style properties. 
+
+//The .length property of an Array describes how many items exist in its special list of elements. Its Object-style properties are not included in that calculation.
+
+//n myArray[0] we're using the integer 0, but under the hood the JavaScript engine automatically converts that to the string "0". 
+
+//When we access elements or properties of an Array, the engine routes all integers and integers masquerading as strings (e.g., '14', "953", etc.) to the Array's special list of elements, and it treats everything else as a simple Object property. 
+
+//For example:
+const myArray = [2, 3, 5, 7];
+
+myArray['1'] = 'Hi';
+//=> "Hi"
+
+myArray['2'] = 'lovely';
+
+myArray;
+//[ 2, 'Hi', 'lovely', 7 ]
+//=> [2, "Hi", 5, 7]
+
+myArray['01'] = 'Ho';
+//=> "Ho"
+
+myArray;
+//=> [2, "Hi", 5, 7, 01: "Ho"]
+
+//myArray[01];
+//=> "Hi"
+
+//myArray['01'];
+//=> "Ho"
+
+//-----------------------------------------------------------------
+
+/////------Remember these simple guidelines------/////
+
+For accessing elements in an Array, always use integers.
+
+Be wary of setting Object-style properties on an Array. There's rarely any reason to, and it's usually more trouble than it's worth.
+
+Remember that all Object keys, including Array indexes, are strings. 
 
