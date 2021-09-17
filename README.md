@@ -15,5 +15,8 @@ Modifying Objects
 - Remove a property from an Object
 - Identify the relationship between Arrays and Objects
 
-Labs
+Objects Lab
+### Learning Goals
+- Create an Object
+- Perform operations on an Object
 - Objects-Lab.js
