@@ -16,4 +16,4 @@ Modifying Objects
 - Identify the relationship between Arrays and Objects
 
 Labs
-- 
+- Objects-Lab.js
